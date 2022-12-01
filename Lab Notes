@@ -120,4 +120,23 @@ Param (
   Get-Event -Logname Security -ComputerName $ComputerName | Where-Object {$_.EventID -eq $EventID
   
   
+  FUNCTIONS
   
+  function Test-Even {
+    param (
+    [int]$Number
+    )
+    $Remainder = $Number % 2
+    if ($Remainder -eq 0) {return $ture}
+    else {return $false}
+ }
+
+
+
+[cmdletbinding()]
+Param(
+  [String]$ComputerName = (Read-Host -Promt 'Enter Computer Name')
+  )
+
+Get-CimInstance -ClassName Win32_LogicalDisk -ComputerName $ComputerName |
+  Where-Object {$_.DriveType -eq 3}
