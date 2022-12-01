@@ -77,3 +77,18 @@ $MailList.Libby = 'LibbyNew@newaddress'
 $MailList.add('Stela','Stela.Sahiti@emailadddress.com')
 $MailList.Remove('Frank')
 $MailList
+
+
+
+
+$ServiceNames= Get-Content E:\services.txt
+foreach ($service in $ServiceNames){
+$ServiceInfo = Get-Service -Name $Service
+if ($ServiceInfo.Status -eq 'Stopped') {
+  Start-Service -Name $Service
+  Write-Host "$Service was Started"}
+else {
+  Write-Host "$Service was already started no action required"} 
+    
+}
+
