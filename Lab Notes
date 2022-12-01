@@ -1,0 +1,79 @@
+$UsersFromTestGroup = Get-ADGroupMember -Identity IPPhoneTest
+foreach ($TestUser in $UsersFromTestGroup) {
+  $UserInfo = Get-ADUser -Filter * | Where-Object {$_.SID -eq $TestUser.SID}
+  $IPPhoneAttr = $UserInfo.GivenName + '.' +$UserInfo.Surname + '@adatum.com'
+  set-aduser -Identity $TestUser -Replace @{ipPhone = $IPPhoneAttr}         
+}
+
+Get-Service | Get-Member -MemberType Properties
+Get-Process | Select-Object -Property *
+
+$now = Get-Date
+Get-HotFix | Select-Object -Property @{n='DaysSinceHotfix';e={($now - $_.installedon).Days}},installedby,hotfixid
+
+Get-EventLog -LogName Security | Where-Object {$_.EventID-eq 4624} | Select-Object -Property TimeWritten,EventID,Message -Last 10 | format-list
+
+$Today = Get-Date
+Get-ChildItem -Path CERT: -Recurse |
+    Where-Object {$_.HasPrivateKey -eq $false -and $_.NotBefore -lt $Today -and $_.NotAfter -gt $Today } |
+    Select-Object -Property FriendlyName,Issuer,NotBefore,NotAfter | Format-List
+
+Get-Volume | Where-Object {$_.SizeRemaining -gt 0} |
+    Select-Object -Property *,@{n='PercentFree';e={$_.SizeRemaining/$_.Size * 100}} |
+    Where-Object {$_.PercentFree -lt 99}|
+    Select-Object -Property DriveLetter,@{n='DiskSizeMB';e={[math]::Round($_.Size / 1MB,3)}}
+
+Get-ControlPanelItem |
+Where-Object {$_.Category -contains 'System and Security' -and $_.Category.Count -eq 1} |
+Sort-Object -Property Name |
+Select-Object -Property Name, Category
+
+
+Get-ADComputer -Filter * |
+    Select-Object -Property @{n='ComputerName';e={$_.name}} |
+    Get-Service -Name Spooler |
+    Select-Object -Property Status,Name,MachineName
+    
+    Get-CimInstance Win32_OperatingSystem | Select-Object Version, ServicePackMajorVersion, BuildNumber
+
+Get-CimInstance Win32_ComputerSystem | Select-Object TotalPhysicalMemory, Model,Manufacturer
+
+
+Get-CimInstance Win32_Service |
+   Where-Object {$_.Name -like 's*'} | 
+   Select-Object Name,State,StartName
+   
+ Get-CimInstance Win32_UserAccount | select Caption,Domain,SID,FullName,Name | ft
+
+Get-CimInstance -ClassName Win32_Group -ComputerName lon-dc1
+
+$session = New-CimSession -ComputerName lon-dc1
+Get-CimInstance -CimSession $session -ClassName win32_service |
+Where-Object {$_.Name -eq 'spooler'}|
+Invoke-CimMethod -MethodName StopService
+
+
+
+$MktgUsers = Get-ADUser -Filter * -Properties Department |
+Where-Object {$_.Department -eq 'Marketing'}
+$MktgUsers.Count
+$MktgUsers[0]
+
+$MktgUsers | Set-ADUser -Department 'Business Development'
+
+[System.Collections.ArrayList]$Computers = 'long-srv1','lon-srv2','lon-dc1'
+$Computers.Add('lon-dc2')
+$Computers.Remove('lon-srv2')
+$Computers.Insert(1,'lon-srv2')
+$Computers
+
+
+$MailList = @{
+    Frank = 'frank@fabrikam.com'
+    Libby = 'Libbyk@contoso.com'
+    Matej = 'Matej@tailspintoys.com'
+    }
+$MailList.Libby = 'LibbyNew@newaddress'
+$MailList.add('Stela','Stela.Sahiti@emailadddress.com')
+$MailList.Remove('Frank')
+$MailList
