@@ -159,7 +159,36 @@ Get-CimInstance -ClassName Win32_LogicalDisk -ComputerName $ComputerName |
   Where-Object {$_.DriveType -eq 3}
 }
 
+Example of adding help information. use command snippets cmdlet advance function complete
+ <#
+    .Synopsis
+       This Says Hello
+    .DESCRIPTION
+       This Command takes your name from the parameter name
+       and returns a string with a gretting say hello
+    .EXAMPLE
+       Example of how to use this cmdlet
+    .EXAMPLE
+       Another example of how to use this cmdlet
+    .INPUTS
+       Enter your name (if any)
+    .OUTPUTS
+       Output from this cmdlet (if any)
+    .NOTES
+       General notes
+    .COMPONENT
+       The component this cmdlet belongs to
+    .ROLE
+       The role this cmdlet belongs to
+    .FUNCTIONALITY
+       The functionality that best describes this cmdlet
+    #>
+cmdletbinding()
+function New-Greeting {
+  Param ([string]$Name)
 
+  return "HELLO $Name"
+}
 [cmdletbinding()]
 Param(
     [String]$ComputerName = (Read-Host -Promt 'Enter Computer Name'),
