@@ -111,10 +111,13 @@ foreach ($NewUser in $NewUsersFromCSV) {
 
 
 
-Parameters
+Parameters (read up on using defult values)
 Param (
   [string]$ComputerName,
   [int]$EventID
   )
 
   Get-Event -Logname Security -ComputerName $ComputerName | Where-Object {$_.EventID -eq $EventID
+  
+  
+  
