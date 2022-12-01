@@ -107,3 +107,14 @@ foreach ($NewUser in $NewUsersFromCSV) {
     }
     New-ADUser @UserSplat
 }
+
+
+
+
+Parameters
+Param (
+  [string]$ComputerName,
+  [int]$EventID
+  )
+
+  Get-Event -Logname Security -ComputerName $ComputerName | Where-Object {$_.EventID -eq $EventID
