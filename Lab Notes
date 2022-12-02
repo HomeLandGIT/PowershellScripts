@@ -205,3 +205,16 @@ else {
     Get-CimInstance -ClassName Win32_LogicalDisk -ComputerName $ComputerName |
       Where-Object {$_.DriveType -eq 3}
 }
+
+
+Scheduled Task Example.
+$JobOpt = New-ScheduledJobOption -RunElevated -HideInTaskScheduler
+
+$JobTrig = New-JobTrigger -Once -at (get-date).AddMinutes(1)
+$SchedSPlat = @{
+  Name = 'TestSched'
+  ScriptBlock = {get-service}
+  Trigger = $JobTrig
+  ScheduledJobOption = $JobOpt
+}
+Register-ScheduledJob @SchedSPlat
